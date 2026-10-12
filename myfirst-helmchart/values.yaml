@@ -1,0 +1,74 @@
+replicaCount: 2
+image:
+  repository: skala-registry.skala-ai.com/class-7/sk212-webserver
+  pullPolicy: Always
+  tag: '2.0'
+imagePullSecrets:
+- name: harbor-registry-secret
+nameOverride: ''
+fullnameOverride: sk212-myfirst-helmchart
+serviceAccount:
+  create: false
+  automount: false
+  annotations: {}
+  name: ''
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+securityContext: {}
+service:
+  type: ClusterIP
+  port: 8080
+ingress:
+  enabled: true
+  className: public-nginx
+  annotations: {}
+  hosts:
+  - host: sk212-ingress.class-7.skala-ai.com
+    paths:
+    - path: /
+      pathType: Prefix
+  tls:
+  - secretName: wildcard-class-7-skala-ai-com-tls
+    hosts:
+    - sk212-ingress.class-7.skala-ai.com
+httpRoute:
+  enabled: false
+  annotations: {}
+  parentRefs:
+  - name: gateway
+    sectionName: http
+  hostnames:
+  - chart-example.local
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /headers
+resources: {}
+livenessProbe:
+  httpGet:
+    path: /actuator/health/liveness
+    port: http
+  initialDelaySeconds: 60
+  periodSeconds: 10
+  timeoutSeconds: 3
+  failureThreshold: 6
+readinessProbe:
+  httpGet:
+    path: /actuator/health/readiness
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 24
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+volumes: []
+volumeMounts: []
+nodeSelector: {}
+tolerations: []
+affinity: {}

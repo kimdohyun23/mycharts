@@ -1,0 +1,6 @@
+apiVersion: v2
+name: sk212-myfirst-helmchart
+description: Spring API Helm chart for sk212 in class-7
+type: application
+version: 0.0.2
+appVersion: 2.0.0
